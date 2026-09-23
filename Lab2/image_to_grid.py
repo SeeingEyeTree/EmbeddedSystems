@@ -1,49 +1,7 @@
-from colorama import just_fix_windows_console
-from termcolor import colored
-trans_flag= ['cyan','magenta', 'white', 'magenta','cyan']
-rainbow = ['red','yellow','green','blue','magenta']
-flags = [trans_flag,rainbow]
-"""
-Convert an image (or video) into terminal pixel art using true 24-bit color.
-
-How it works:
-  1. cv2.resize(img, (cols, rows), interpolation=cv2.INTER_AREA) shrinks the
-     image down to one pixel per grid cell. INTER_AREA is a box filter, so
-     each output pixel is literally the AVERAGE of the pixels in that region
-     of the original image -- that's the "average each grid cell" step,
-     done for free with no manual looping.
-  2. Each averaged pixel is printed directly as a truecolor ANSI background
-     color -- no palette or nearest-color matching needed, since modern
-     terminals (iTerm2, Windows Terminal, most Linux terminals, VS Code's
-     integrated terminal, etc.) support the full 16.7 million RGB colors.
-  3. For video, the same per-frame downscale+print is repeated for every
-     frame read from cv2.VideoCapture, with the cursor moved back to the
-     top of the frame (instead of clearing the screen) to keep playback
-     smooth and flicker-free.
-
-Usage:
-    python3 image_to_pixelart.py path/to/image.png --cols 32 --rows 32
-    python3 image_to_pixelart.py path/to/clip.mp4 --cols 32 --rows 18 --video
-    python3 image_to_pixelart.py path/to/clip.mp4 --cols 32 --rows 18 --video --fps 15 --loop
-
-
-    from sense_hat import SenseHat
-import time
-
-sense = SenseHat()
-
-while True:
-        sense.set_pixel(0, 2, (0, 0, 255))
-        time.sleep(1)
-        sense.set_pixel(7, 4, (255, 0, 0))
-        time.sleep(1)
-"""
-
 import argparse
 import sys
 import time
 import cv2
-import numpy as np
 from colorama import just_fix_windows_console
 
 just_fix_windows_console()
@@ -89,9 +47,9 @@ def grid_to_lines(grid, pixel="  "):
 
 
 def print_pixel_art(grid, pixel="  "):
+    """Print one grid as terminal pixel art."""
     for line in grid_to_lines(grid, pixel):
         print(line)
-
 
 
 def display_grid(grid):
@@ -103,85 +61,58 @@ def display_grid(grid):
             sense.set_pixel(c, r, rgb)
 
 
-
-def display_grid_pixel_grid(grid):
-    """Display the grid as pixel art in the terminal."""
-    for line in grid_to_lines(grid):
-        print(line)
-
-
 def video_to_grids(path, cols, rows):
-    """Load a video and reduce it to a cols x rows grid of (r, g, b) tuples for the first frame."""
+    """Load every video frame as a list of RGB grids."""
     cap = cv2.VideoCapture(path)
     if not cap.isOpened():
         raise FileNotFoundError(f"Could not open video: {path}")
-    grids = []
-    ret, frame = cap.read()
-    while ret:
-        grids.append(frame_to_grid(frame, cols, rows))
-        ret, frame = cap.read()
-    cap.release()
-    return grids
-
-
-
-def video_to_terminal(path, cols, rows, fps=None, pixel="  ", loop=False, max_frames=None):
-    """
-    Play a video file (mp4, mov, avi, etc.) as terminal pixel art.
-
-    Each frame is downscaled to a cols x rows grid exactly like a still
-    image, then printed. Between frames the cursor is moved back to the
-    top-left (rather than clearing the screen) so playback doesn't flicker.
-
-    Args:
-        path:       path to the video file
-        cols, rows: grid size in terminal cells
-        fps:        target playback fps. Defaults to the video's own fps
-                    (from cv2.CAP_PROP_FPS, falling back to 30 if unknown).
-        pixel:      string used per cell (default two spaces, like image mode)
-        loop:       if True, replay from the start when the video ends
-        max_frames: optional cap on how many frames to play (useful for
-                    testing without watching the whole clip)
-    """
-    cap = cv2.VideoCapture(path)
-    if not cap.isOpened():
-        raise FileNotFoundError(f"Could not open video: {path}")
-
-    src_fps = cap.get(cv2.CAP_PROP_FPS)
-    if not src_fps or src_fps <= 0:
-        src_fps = 30.0
-    target_fps = fps if fps and fps > 0 else src_fps
-    delay = 1.0 / target_fps
-
-    sys.stdout.write(HIDE_CURSOR + CLEAR_SCREEN)
-    sys.stdout.flush()
-
-    frame_count = 0
     try:
+        grids = []
         while True:
             ret, frame = cap.read()
             if not ret:
-                if loop:
-                    cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
-                    continue
-                break
-
-            grid = frame_to_grid(frame, cols, rows)
-            lines = grid_to_lines(grid, pixel)
-
-            sys.stdout.write(CURSOR_HOME)
-            sys.stdout.write("\n".join(lines) + "\n")
-            sys.stdout.flush()
-
-            frame_count += 1
-            if max_frames is not None and frame_count >= max_frames:
-                break
-
-            time.sleep(delay)
+                return grids
+            grids.append(frame_to_grid(frame, cols, rows))
     finally:
         cap.release()
+
+
+def display_grids_terminal(grids, fps=30.0, pixel="  ", loop=False):
+    """Play a sequence of grids in the terminal."""
+    if not grids:
+        return
+    delay = 1.0 / fps if fps and fps > 0 else 1.0 / 30.0
+
+    sys.stdout.write(HIDE_CURSOR + CLEAR_SCREEN)
+    sys.stdout.flush()
+    try:
+        while True:
+            for grid in grids:
+                sys.stdout.write(CURSOR_HOME)
+                sys.stdout.write("\n".join(grid_to_lines(grid, pixel)) + "\n")
+                sys.stdout.flush()
+                time.sleep(delay)
+            if not loop:
+                break
+    finally:
         sys.stdout.write(SHOW_CURSOR)
         sys.stdout.flush()
+
+
+def display_grids_sensehat(grids, delay=0.0, loop=False):
+    """Display a sequence of grids on the Sense HAT LED matrix."""
+    if not grids:
+        return
+    from sense_hat import SenseHat
+
+    sense = SenseHat()
+    while True:
+        for grid in grids:
+            display_grid(grid)
+            if delay > 0:
+                time.sleep(delay)
+        if not loop:
+            break
 
 
 if __name__ == "__main__":
@@ -189,33 +120,25 @@ if __name__ == "__main__":
     parser.add_argument("path", help="Path to the input image or video file")
     parser.add_argument("--cols", type=int, default=24, help="Grid width in cells")
     parser.add_argument("--rows", type=int, default=24, help="Grid height in cells")
-    parser.add_argument("--preview", default=None, help="Optional path to save a PNG preview (image mode only)")
     parser.add_argument("--video", action="store_true", help="Treat the input as a video file")
-    parser.add_argument("--fps", type=float, default=None, help="Playback fps for video (defaults to the source video's fps)")
+    parser.add_argument("--fps", type=float, default=30.0, help="Playback fps for video (default: 30)")
     parser.add_argument("--loop", action="store_true", help="Loop the video playback")
     parser.add_argument("--grid", action="store_true", help="Display the image as a grid in the terminal")
     parser.add_argument("--max-frames", type=int, default=None, help="Stop after this many frames (video only)")
-    parser.add_argument("--video-pixel", action="store_true", help="Display video as a sequence of pixel grids in the terminal")
+    parser.add_argument("--sensehat", action="store_true", help="Display video grids on the Sense HAT")
     args = parser.parse_args()
 
     if args.video:
-        video_to_terminal(
-            args.path,
-            args.cols,
-            args.rows,
-            fps=args.fps,
-            loop=args.loop,
-            max_frames=args.max_frames,
-        )
+        grids = video_to_grids(args.path, args.cols, args.rows)
+        if args.max_frames is not None:
+            grids = grids[:args.max_frames]
+        if args.sensehat:
+            display_grids_sensehat(grids, delay=1.0 / args.fps, loop=args.loop)
+        else:
+            display_grids_terminal(grids, fps=args.fps, loop=args.loop)
     elif args.grid:
         grid = image_to_grid(args.path, args.cols, args.rows)
-        display_grid_pixel_grid(grid)
-    elif args.video_pixel:
-        grids = video_to_grids(args.path, args.cols, args.rows)
-        for grid in grids:
-            time.sleep(1.0 / (args.fps if args.fps and args.fps > 0 else 30.0))
-            display_grid_pixel_grid(grid)
-    
+        print_pixel_art(grid)
     else:
         grid = image_to_grid(args.path, args.cols, args.rows)
         print_pixel_art(grid)
