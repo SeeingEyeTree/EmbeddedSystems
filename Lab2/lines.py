@@ -9,5 +9,5 @@ for i in range(6):
     for j in range(8):
         y = j
         slope = (y_end - y) / (x_end - x) if (x_end - x) != 0 else None
-        hat.set_pixel(x, y, slope)
+        hat.set_pixel(x, y, (10*slope, 0))
         time.sleep(0.2)
