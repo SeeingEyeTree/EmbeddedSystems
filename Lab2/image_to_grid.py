@@ -25,6 +25,18 @@ Usage:
     python3 image_to_pixelart.py path/to/image.png --cols 32 --rows 32
     python3 image_to_pixelart.py path/to/clip.mp4 --cols 32 --rows 18 --video
     python3 image_to_pixelart.py path/to/clip.mp4 --cols 32 --rows 18 --video --fps 15 --loop
+
+
+    from sense_hat import SenseHat
+import time
+
+sense = SenseHat()
+
+while True:
+        sense.set_pixel(0, 2, (0, 0, 255))
+        time.sleep(1)
+        sense.set_pixel(7, 4, (255, 0, 0))
+        time.sleep(1)
 """
 
 import argparse
@@ -94,7 +106,18 @@ def save_preview(grid, out_path, cell_size=20):
     cv2.imwrite(out_path, canvas)
 
 
-def video_to_grid(path, cols, rows, fps=None, pixel="  ", loop=False, max_frames=None):
+def display_grid(grid):
+    """Display the grid on the Sense HAT LED matrix."""
+    from sense_hat import SenseHat
+    sense = SenseHat()
+    for r, row in enumerate(grid):
+        for c, rgb in enumerate(row):
+            sense.set_pixel(c, r, rgb)
+
+
+
+
+def video_to_terminal(path, cols, rows, fps=None, pixel="  ", loop=False, max_frames=None):
     """
     Play a video file (mp4, mov, avi, etc.) as terminal pixel art.
 
@@ -166,7 +189,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.video:
-        video_to_grid(
+        video_to_terminal(
             args.path,
             args.cols,
             args.rows,
