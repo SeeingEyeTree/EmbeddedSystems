@@ -93,18 +93,6 @@ def print_pixel_art(grid, pixel="  "):
         print(line)
 
 
-def save_preview(grid, out_path, cell_size=20):
-    """Render the grid to a PNG so you can preview it without a terminal."""
-    rows, cols = len(grid), len(grid[0])
-    canvas = np.zeros((rows * cell_size, cols * cell_size, 3), dtype=np.uint8)
-    for r, row in enumerate(grid):
-        for c, rgb in enumerate(row):
-            bgr = (rgb[2], rgb[1], rgb[0])
-            y0, y1 = r * cell_size, (r + 1) * cell_size
-            x0, x1 = c * cell_size, (c + 1) * cell_size
-            canvas[y0:y1, x0:x1] = bgr
-    cv2.imwrite(out_path, canvas)
-
 
 def display_grid(grid):
     """Display the grid on the Sense HAT LED matrix."""
@@ -113,6 +101,13 @@ def display_grid(grid):
     for r, row in enumerate(grid):
         for c, rgb in enumerate(row):
             sense.set_pixel(c, r, rgb)
+
+
+
+def display_grid_pixel_grid(grid):
+    """Display the grid as pixel art in the terminal."""
+    for line in grid_to_lines(grid):
+        print(line)
 
 
 
@@ -185,6 +180,7 @@ if __name__ == "__main__":
     parser.add_argument("--video", action="store_true", help="Treat the input as a video file")
     parser.add_argument("--fps", type=float, default=None, help="Playback fps for video (defaults to the source video's fps)")
     parser.add_argument("--loop", action="store_true", help="Loop the video playback")
+    parser.add_argument("--grid", action="store_true", help="Display the image as a grid in the terminal")
     parser.add_argument("--max-frames", type=int, default=None, help="Stop after this many frames (video only)")
     args = parser.parse_args()
 
@@ -197,6 +193,10 @@ if __name__ == "__main__":
             loop=args.loop,
             max_frames=args.max_frames,
         )
+    elif args.grid:
+        grid = image_to_grid(args.path, args.cols, args.rows)
+        display_grid_pixel_grid(grid)
+    
     else:
         grid = image_to_grid(args.path, args.cols, args.rows)
         print_pixel_art(grid)
