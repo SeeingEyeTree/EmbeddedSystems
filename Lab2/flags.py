@@ -12,18 +12,18 @@ k = (0, 0, 0)            # black
 br = (139, 69, 19)       # brown
 dr = (210, 0, 0)         # dark red/lesbian flag
 gy = (128, 128, 128)     # grey
-from image_to_pixelart import display_grid
+from image_to_grid import display_grid,print_pixel_art
 import time
 
 # Trans Flag (5 stripes)
 trans_flag = [
     [t] * 8,
-    [t] * 8,
     [p] * 8,
     [w] * 8,
     [p] * 8,
-    [p] * 8,
     [t] * 8,
+    [k] * 8,
+    [k] * 8,
     [k] * 8,
 ]
 
@@ -42,25 +42,25 @@ rainbow_flag = [
 # Lesbian Flag (5 stripes)
 lesbian_flag = [
     [o] * 8,
-    [o] * 8,
-    [w] * 8,
-    [w] * 8,
     [w] * 8,
     [p] * 8,
     [dr] * 8,
+    [k] * 8,
+    [k] * 8,
+    [k] * 8,
     [k] * 8,
 ]
 
 # Asexual Flag (4 stripes)
 asexual_flag = [
     [k] * 8,
+    [gy] * 8,
+    [w] * 8,
+    [v] * 8,
     [k] * 8,
-    [gy] * 8,
-    [gy] * 8,
-    [w] * 8,
-    [w] * 8,
-    [v] * 8,
-    [v] * 8,
+    [k] * 8,
+    [k] * 8,
+    [k] * 8,
 ]
 
 # Nonbinary Flag (4 stripes)
@@ -77,12 +77,12 @@ nonbinary_flag = [
 
 # Progress Pride Flag (chevron + rainbow)
 progress_flag = [
-    [t, t, r, r, r, r, r, r],
-    [t, t, o, o, o, o, o, o],
-    [p, p, y, y, y, y, y, y],
-    [w, w, g, g, g, g, g, g],
-    [br, br, b, b, b, b, b, b],
-    [k, k, v, v, v, v, v, v],
+    [t, br, r, r, r, r, r, r],
+    [p, t, br, o, o, o, o, o],
+    [w, p, t, br, y, y, y, y],
+    [w, p, t, br, g, g, g, g],
+    [p, t, br, b, b, b, b, b],
+    [t, br, v, v, v, v, v, v],
     [k, k, k, k, k, k, k, k],
     [k, k, k, k, k, k, k, k],
 ]
