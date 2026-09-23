@@ -110,6 +110,19 @@ def display_grid_pixel_grid(grid):
         print(line)
 
 
+def video_to_grids(path, cols, rows):
+    """Load a video and reduce it to a cols x rows grid of (r, g, b) tuples for the first frame."""
+    cap = cv2.VideoCapture(path)
+    if not cap.isOpened():
+        raise FileNotFoundError(f"Could not open video: {path}")
+    grids = []
+    ret, frame = cap.read()
+    while ret:
+        grids.append(frame_to_grid(frame, cols, rows))
+        ret, frame = cap.read()
+    cap.release()
+    return grids
+
 
 
 def video_to_terminal(path, cols, rows, fps=None, pixel="  ", loop=False, max_frames=None):
@@ -182,6 +195,7 @@ if __name__ == "__main__":
     parser.add_argument("--loop", action="store_true", help="Loop the video playback")
     parser.add_argument("--grid", action="store_true", help="Display the image as a grid in the terminal")
     parser.add_argument("--max-frames", type=int, default=None, help="Stop after this many frames (video only)")
+    parser.add_argument("--video-pixel", action="store_true", help="Display video as a sequence of pixel grids in the terminal")
     args = parser.parse_args()
 
     if args.video:
@@ -196,6 +210,11 @@ if __name__ == "__main__":
     elif args.grid:
         grid = image_to_grid(args.path, args.cols, args.rows)
         display_grid_pixel_grid(grid)
+    elif args.video_pixel:
+        grids = video_to_grids(args.path, args.cols, args.rows)
+        for grid in grids:
+            time.sleep(1.0 / (args.fps if args.fps and args.fps > 0 else 30.0))
+            display_grid_pixel_grid(grid)
     
     else:
         grid = image_to_grid(args.path, args.cols, args.rows)
