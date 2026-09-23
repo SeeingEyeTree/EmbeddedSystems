@@ -11,17 +11,20 @@ def clear_sensehat():
     sense = SenseHat()
     for r in range(8):
         for c in range(8):
-            sense.set_pixel(c, r, 0)
+            sense.set_pixel(c, r, (0,0,0))
 
 
 for i in range(7):
     x = i
     for j in range(7):
         y = j
-        slope = (y_end - y) / (x_end - x) if (x_end - x) != 0 else None
-        hat.set_pixel(x, y, (int(10* slope), 0, 50))
-        for k in range(7 - x):
-            hat.set_pixel(x + k, int(y + slope), (int(10* slope), 0, 50))
+        slope = (y_end - y) / (x_end - x) if (x_end - x) != 0 else 0
+        color_val = min(255, int(abs(10 * slope)))
+        for k in range(7 - x + 1):
+            px = x + k
+            py = int(y + k * slope)
+            if 0 <= py <= 7:
+                hat.set_pixel(px, py, (color_val, 0, 50))
         time.sleep(0.2)
         clear_sensehat()
         
