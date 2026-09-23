@@ -1,0 +1,13 @@
+from image_to_grid import display_grid
+import time
+from sense_hat import SenseHat
+hat = SenseHat()
+x_end = 7
+y_end = 7
+for i in range(6):
+    x = i
+    for j in range(8):
+        y = j
+        slope = (y_end - y) / (x_end - x) if (x_end - x) != 0 else None
+        hat.set_pixel(x, y, slope)
+        time.sleep(0.2)
