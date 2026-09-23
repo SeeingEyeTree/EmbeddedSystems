@@ -200,7 +200,3 @@ if __name__ == "__main__":
     else:
         grid = image_to_grid(args.path, args.cols, args.rows)
         print_pixel_art(grid)
-
-        if args.preview:
-            save_preview(grid, args.preview)
-            print(f"\nSaved preview to {args.preview}")
