@@ -4,10 +4,22 @@ from sense_hat import SenseHat
 hat = SenseHat()
 x_end = 7
 y_end = 7
+
+
+def clear_sensehat():
+    from sense_hat import SenseHat
+    sense = SenseHat()
+    for r in range(8):
+        for c in range(8):
+            sense.set_pixel(c, r, 0)
+
+
 for i in range(6):
     x = i
     for j in range(8):
         y = j
         slope = (y_end - y) / (x_end - x) if (x_end - x) != 0 else None
-        hat.set_pixel(x, y, (10*slope, 0))
+        hat.set_pixel(x, y, (int(10* slope), 0, 50))
         time.sleep(0.2)
+        clear_sensehat()
+        

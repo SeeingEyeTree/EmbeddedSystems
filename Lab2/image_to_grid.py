@@ -61,6 +61,13 @@ def display_grid(grid):
             sense.set_pixel(c, r, rgb)
 
 
+def clear_sensehat():
+    from sense_hat import SenseHat
+    sense = SenseHat()
+    for r in range(8):
+        for c in range(8):
+            sense.set_pixel(c, r, 0)
+
 def video_to_grids(path, cols, rows):
     """Load every video frame as a list of RGB grids."""
     cap = cv2.VideoCapture(path)
