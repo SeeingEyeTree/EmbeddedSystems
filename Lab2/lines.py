@@ -18,7 +18,11 @@ for i in range(7):
     x = i
     for j in range(7):
         y = j
-        slope = (y_end - y) / (x_end - x) if (x_end - x) != 0 else 0
+        
+        if (x_end - x) != 0 :
+            slope = (y_end - y) / (x_end - x) 
+        else:
+            slope =  0
         color_val = min(255, int(abs(50 * slope)))
         for k in range(7 - x + 1):
             px = x + k
