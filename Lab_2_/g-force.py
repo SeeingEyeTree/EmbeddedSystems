@@ -64,3 +64,4 @@ if __name__ == "__main__":
             clear_sensehat()
 
         print("x={0}, y={1}, z={2}".format(x, y, z))
+        print("up={0}, down={1}, xp={2}, xn={3}, yp={4}, yn={5}".format(up, down, xp, xn, yp, yn))
