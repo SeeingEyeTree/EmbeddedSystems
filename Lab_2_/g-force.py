@@ -44,7 +44,7 @@ if __name__ == "__main__":
         down = z <= -0.9
         xp = x >=thres
         xn = x <= -thres
-        yn =  y <=thres
+        yn =  y <= -thres
         yp = y>=thres
         xgs = xp or xn
         ygs = yp or yn
