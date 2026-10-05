@@ -22,13 +22,13 @@ for i in range(7):
         if (x_end - x) != 0 :
             slope = (y_end - y) / (x_end - x) 
         else:
-            slope =  0
-        color_val = min(255, int(abs(50 * slope)))
+            slope = 0
+
         for k in range(7 - x + 1):
             px = x + k
-            py = int(y + k * slope)
+            py = int(y + k * slope) # round to a int so pix accepts
             if 0 <= py <= 7:
-                hat.set_pixel(px, py, (color_val, int(color_val/2), int(color_val/4)))
+                hat.set_pixel(px, py, (0, 128, 0))
         time.sleep(0.2)
         clear_sensehat()
         

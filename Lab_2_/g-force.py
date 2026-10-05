@@ -15,7 +15,14 @@ def clear_sensehat():
             sense.set_pixel(c, r, (0,0,0))
 
 
+def row(row_num, color):
+    for r in range(8):
+        sense.set_pixel(0, r, color)
 
+
+def col(row_num, color):
+    for c in range(8):
+        sense.set_pixel(c, 0, color)
 
 if __name__ == "__main__":
     while True:	
@@ -32,7 +39,7 @@ if __name__ == "__main__":
         #up
         thres = 0.4
         up = z >= 0.9
-        down z <= -0.9
+        down = z <= -0.9
         xp = x >=thres
         xn = x <= -thres
         yn =  y <=thres
@@ -43,5 +50,8 @@ if __name__ == "__main__":
             sense.show_message("up")
         elif down and not (x or y):
             print('down')
+        elif xp:
+            row(0,r)
+
 
         print("x={0}, y={1}, z={2}".format(x, y, z))

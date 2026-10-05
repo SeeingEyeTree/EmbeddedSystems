@@ -1,4 +1,4 @@
-# Color definitions as RGB tuples
+# Color definitions
 t = (91, 206, 250)       # trans light blue
 p = (245, 169, 184)      # trans pink
 w = (255, 255, 255)      # white
@@ -7,7 +7,7 @@ o = (255, 165, 0)        # orange
 y = (255, 255, 0)        # yellow
 g = (0, 128, 0)          # green
 b = (0, 0, 255)          # blue
-v = (128, 0, 128)        # violet/purple
+v = (128, 0, 128)        # violet
 k = (0, 0, 0)            # black
 br = (139, 69, 19)       # brown
 dr = (210, 0, 0)         # dark red/lesbian flag
