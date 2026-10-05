@@ -36,7 +36,7 @@ if __name__ == "__main__":
         if i % 4 == 0:
             color = r
         elif i % 4 == 1:
-            color = y
+            color = yellow
         elif i % 4 == 2:
             color = g
         elif i % 4 == 3:
