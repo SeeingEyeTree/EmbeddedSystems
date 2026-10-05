@@ -69,3 +69,6 @@ if __name__ == "__main__":
     while True:
         for event in sense.stick.get_events():        
             print(event.direction, event.action)
+            event = event.direction + event.action
+        if event = "middle held":
+            task1()
