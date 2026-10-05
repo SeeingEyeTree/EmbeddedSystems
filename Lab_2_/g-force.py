@@ -53,9 +53,9 @@ if __name__ == "__main__":
         elif down and not (xgs or ygs):
             print('down')
         elif xp:
-            row(0,r)
+            row(7,r)
         elif xn:
-            row(7,o)
+            row(0,o)
         elif yp:
             col(7,yellow)
         elif yn:
@@ -63,5 +63,5 @@ if __name__ == "__main__":
         else:
             clear_sensehat()
 
-        print("x={0}, y={1}, z={2}".format(x, y, z))
-        print("up={0}, down={1}, xp={2}, xn={3}, yp={4}, yn={5}".format(up, down, xp, xn, yp, yn))
+        #print("x={0}, y={1}, z={2}".format(x, y, z))
+        #print("up={0}, down={1}, xp={2}, xn={3}, yp={4}, yn={5}".format(up, down, xp, xn, yp, yn))
