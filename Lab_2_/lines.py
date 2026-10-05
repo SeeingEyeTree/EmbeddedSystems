@@ -30,6 +30,7 @@ if __name__ == "__main__":
     pixels = [(0, 0)]
     visited = {(0, 0)}
     while pixels:
+        clear_sensehat()
         x, y = pixels.pop(0)
         sense.set_pixel(x, y, r)
         for p in get_adjacent_pixels(x, y):
