@@ -35,5 +35,5 @@ if __name__ == "__main__":
             x, y = pixel
             sense.set_pixel(x, y, r)
             visited.append(pixel)
-            pixels.append(get_adjacent_pixels(pixel, pixel))
+            pixels.append(get_adjacent_pixels(pixel[0], pixel[1]))
         
