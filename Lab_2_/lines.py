@@ -16,9 +16,9 @@ def clear_sensehat():
 
 def get_adjacent_pixels(x, y):
     adjacent_pixels = []
-    for dx in [-1, 0, 1]:
-        for dy in [-1, 0, 1]:
-            if dx == 0 and dy == 0:
+    for dx in [0, 1]:
+        for dy in [0, 1]:
+            if dx == 0 and dy == 0 or (dx == 1 and dy == 1):
                 continue
             new_x = x + dx
             new_y = y + dy
@@ -36,5 +36,6 @@ if __name__ == "__main__":
             x, y = pixel
             sense.set_pixel(x, y, r)
             visited.append(pixel)
+            print(get_adjacent_pixels(x, y))
             pixels.append(get_adjacent_pixels(x, y))
         
