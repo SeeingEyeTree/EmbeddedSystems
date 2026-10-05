@@ -27,11 +27,13 @@ def get_adjacent_pixels(x, y):
     return adjacent_pixels
 
 if __name__ == "__main__":
+    clear_sensehat()
     pixels = [[0,0]]
     visited = [pixels[0]]
     while True:
         for pixel in pixels:
             x, y = pixel
             sense.set_pixel(x, y, r)
-        pixels = get_adjacent_pixels(pixels[0][0], pixels[0][1])
+            visited.append(pixel)
+            pixels.append(get_adjacent_pixels(pixel, pixel))
         
