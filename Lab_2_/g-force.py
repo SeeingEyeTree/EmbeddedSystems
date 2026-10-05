@@ -2,7 +2,7 @@ from sense_hat import SenseHat
 import time
 o = (255, 165, 0)
 r = (255, 0, 0)          # red
-y = (255, 255, 0)        # yellow
+yellow = (255, 255, 0)        # yellow
 g = (0, 128, 0)          # green
 b = (0, 0, 255)          # blue
 v = (128, 0, 128)        # violet
@@ -10,12 +10,14 @@ k = (0, 0, 0)            # nothing
 sense = SenseHat()
 
 def clear_sensehat():
+    clear_sensehat()
     for r in range(8):
         for c in range(8):
             sense.set_pixel(c, r, (0,0,0))
 
 
 def row(row_num, color):
+    clear_sensehat()
     for r in range(8):
         sense.set_pixel(0, r, color)
 
@@ -55,8 +57,10 @@ if __name__ == "__main__":
         elif xn:
             row(7,o)
         elif yp:
-            col(0,y)
+            col(0,yellow)
         elif yn:
             col(7,b)
+        else:
+            clear_sensehat()
 
         print("x={0}, y={1}, z={2}".format(x, y, z))
