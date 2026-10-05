@@ -16,13 +16,11 @@ def clear_sensehat():
 
 
 def row(row_num, color):
-    clear_sensehat()
     for r in range(8):
         sense.set_pixel(row_num, r, color)
 
 
 def col(col_num, color):
-    clear_sensehat()
     for c in range(8):
         sense.set_pixel(c, col_num, color)
 
@@ -48,6 +46,7 @@ if __name__ == "__main__":
         yp = y>=thres
         xgs = xp or xn
         ygs = yp or yn
+        clear_sensehat()
         if up and not (xgs or ygs):
             sense.show_message("up")
         elif down and not (xgs or ygs):
