@@ -32,8 +32,9 @@ if __name__ == "__main__":
     visited = [pixels[0]]
     while True:
         for pixel in pixels:
+            print(f"Current pixel: {pixel}")
             x, y = pixel
             sense.set_pixel(x, y, r)
             visited.append(pixel)
-            pixels.append(get_adjacent_pixels(pixel[0], pixel[1]))
+            pixels.append(get_adjacent_pixels(x, y))
         
