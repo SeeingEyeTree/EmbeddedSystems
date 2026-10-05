@@ -30,10 +30,22 @@ if __name__ == "__main__":
 
     pixels = [[0,0]]
     visited = [pixels[0]]
+    i = 0
     while True:
+        color =r
+        if i % 4 == 0:
+            color = r
+        elif i % 4 == 1:
+            color = y
+        elif i % 4 == 2:
+            color = g
+        elif i % 4 == 3:
+            color = b
+
+        i += 1
         clear_sensehat()
         for x, y in pixels:
-            sense.set_pixel(x, y, r)
+            sense.set_pixel(x, y, color)
             visited.append((x, y))
 
         time.sleep(0.3)
@@ -43,5 +55,6 @@ if __name__ == "__main__":
             for p in get_adjacent_pixels(x, y):
                 if p not in visited:
                     next_pixels.append(p)
-
+        if any(p == (7, 7) for p in next_pixels):
+            next_pixels = [(0,0)]
         pixels = next_pixels
