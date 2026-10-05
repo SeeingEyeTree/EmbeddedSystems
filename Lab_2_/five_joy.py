@@ -70,16 +70,15 @@ if __name__ == "__main__":
         for event in sense.stick.get_events():        
             #print(event.direction, event.action)
             thing = event.direction + " " + event.action
-            print(type(thing))
-            print(thing)
-            if thing == "middle held":
-                task1()
-                print(thing)
-            elif thing == "left held":
-                task2()
-            elif thing == "right held":
-                task3()
-            elif thing == "up held":
-                task4()
-            elif thing == "down held":
-                task5()
+            #print(type(thing))
+            #print(thing)
+        if thing == "middle held":
+            task1()
+        elif thing == "left held":
+            task2()
+        elif thing == "right held":
+            task3()
+        elif thing == "up held":
+            task4()
+        elif thing == "down held":
+            task5()
