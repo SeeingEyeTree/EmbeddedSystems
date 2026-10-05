@@ -34,7 +34,7 @@ if __name__ == "__main__":
         clear_sensehat()
         for x, y in pixels:
             sense.set_pixel(x, y, r)
-            visited.add((x, y))
+            visited.append((x, y))
 
         time.sleep(0.3)
 
