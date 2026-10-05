@@ -9,8 +9,6 @@ k = (0, 0, 0)            # nothing
 sense = SenseHat()
 
 def clear_sensehat():
-    from sense_hat import SenseHat
-    sense = SenseHat()
     for r in range(8):
         for c in range(8):
             sense.set_pixel(c, r, (0,0,0))
@@ -65,7 +63,7 @@ def task5():
                 px = x + k
                 py = int(y + k * slope) # round to a int so pix accepts
                 if 0 <= py <= 7:
-                    hat.set_pixel(px, py, (0, 128, 0))
+                    sense.set_pixel(px, py, (0, 128, 0))
             time.sleep(0.2)
             clear_sensehat()
 
