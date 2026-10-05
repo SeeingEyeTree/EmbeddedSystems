@@ -1,4 +1,5 @@
 from sense_hat import SenseHat
+import time
 o = (255, 165, 0)
 r = (255, 0, 0)          # red
 y = (255, 255, 0)        # yellow
