@@ -56,5 +56,8 @@ if __name__ == "__main__":
                 if p not in visited:
                     next_pixels.append(p)
         if any(p == (7, 7) for p in next_pixels):
+            # reset the pixels to start over
+            pixels = [[0, 0]] # double just to make sure 
             next_pixels = [(0,0)]
+            visited = [pixels[0]]
         pixels = next_pixels
