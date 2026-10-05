@@ -44,14 +44,14 @@ if __name__ == "__main__":
         xn = x <= -thres
         yn =  y <=thres
         yp = y>=thres
-        x = xp or xn
-        y = yp or yn
-        if up and not (x or y):
+        xgs = xp or xn
+        ygs = yp or yn
+        if up and not (xgs or ygs):
             sense.show_message("up")
-        elif down and not (x or y):
+        elif down and not (xgs or ygs):
             print('down')
         elif xp:
             row(0,r)
 
 
-        print("x={0}, y={1}, z={2}".format(x, y, z))
+        #print("x={0}, y={1}, z={2}".format(x, y, z))
