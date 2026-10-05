@@ -1,5 +1,11 @@
 from sense_hat import SenseHat
 o = (255, 165, 0)
+r = (255, 0, 0)          # red
+y = (255, 255, 0)        # yellow
+g = (0, 128, 0)          # green
+b = (0, 0, 255)          # blue
+v = (128, 0, 128)        # violet
+k = (0, 0, 0)            # nothing
 sense = SenseHat()
 
 def clear_sensehat():
@@ -43,6 +49,8 @@ def task4():
 
 
 def task5():
+    x_end = 7
+    y_end = 7
     for i in range(7):
         x = i
         for j in range(7):
