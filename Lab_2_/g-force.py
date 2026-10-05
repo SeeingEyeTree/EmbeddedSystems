@@ -10,7 +10,6 @@ k = (0, 0, 0)            # nothing
 sense = SenseHat()
 
 def clear_sensehat():
-    clear_sensehat()
     for r in range(8):
         for c in range(8):
             sense.set_pixel(c, r, (0,0,0))
@@ -19,12 +18,13 @@ def clear_sensehat():
 def row(row_num, color):
     clear_sensehat()
     for r in range(8):
-        sense.set_pixel(0, r, color)
+        sense.set_pixel(row_num, r, color)
 
 
-def col(row_num, color):
+def col(col_num, color):
+    clear_sensehat()
     for c in range(8):
-        sense.set_pixel(c, 0, color)
+        sense.set_pixel(c, col_num, color)
 
 if __name__ == "__main__":
     while True:	
@@ -57,9 +57,9 @@ if __name__ == "__main__":
         elif xn:
             row(7,o)
         elif yp:
-            col(0,yellow)
+            col(7,yellow)
         elif yn:
-            col(7,b)
+            col(0,b)
         else:
             clear_sensehat()
 
