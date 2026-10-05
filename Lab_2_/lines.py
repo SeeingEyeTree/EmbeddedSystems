@@ -27,16 +27,21 @@ def get_adjacent_pixels(x, y):
     return adjacent_pixels
 
 if __name__ == "__main__":
-    pixels = [(0, 0)]
-    visited = {(0, 0)}
-    while pixels:
+
+    pixels = [[0,0]]
+    visited = [pixels[0]]
+    while True:
         clear_sensehat()
-        x, y = pixels.pop(0)
-        sense.set_pixel(x, y, r)
-        for p in get_adjacent_pixels(x, y):
-            if p not in visited:
-                visited.add(p)
-                pixels.append(p)
-        time.sleep(0.1)
+        for x, y in pixels:
+            sense.set_pixel(x, y, r)
+            visited.add((x, y))
 
+        time.sleep(0.3)
 
+        next_pixels = []
+        for x, y in pixels:
+            for p in get_adjacent_pixels(x, y):
+                if p not in visited:
+                    next_pixels.append(p)
+
+        pixels = next_pixels
