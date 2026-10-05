@@ -69,7 +69,7 @@ if __name__ == "__main__":
     while True:
         for event in sense.stick.get_events():        
             #print(event.direction, event.action)
-            thing = event.direction + event.action
+            thing = event.direction + " " + event.action
             print(type(thing))
             print(thing)
             if thing == "middle held":
