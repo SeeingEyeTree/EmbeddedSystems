@@ -52,6 +52,11 @@ if __name__ == "__main__":
             print('down')
         elif xp:
             row(0,r)
+        elif xn:
+            row(7,o)
+        elif yp:
+            col(0,y)
+        elif yn:
+            col(7,b)
 
-
-        #print("x={0}, y={1}, z={2}".format(x, y, z))
+        print("x={0}, y={1}, z={2}".format(x, y, z))
