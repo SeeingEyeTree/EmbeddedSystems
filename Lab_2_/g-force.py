@@ -18,16 +18,30 @@ def clear_sensehat():
 
 
 if __name__ == "__main__":
-
     while True:	
-            acceleration = sense.get_accelerometer_raw()	
+        acceleration = sense.get_accelerometer_raw()	
 
-            x = acceleration['x']	
-            y = acceleration['y']	
-            z = acceleration['z']	
-            
-            x=round(x, 1)	
-            y=round(y, 1)	
-            z=round(z, 1)	
+        x = acceleration['x']	
+        y = acceleration['y']	
+        z = acceleration['z']	
+        
+        x=round(x, 1)	
+        y=round(y, 1)	
+        z=round(z, 1)	
 
-            print("x={0}, y={1}, z={2}".format(x, y, z))
+        #up
+        thres = 0.4
+        up = z >= 0.9
+        down z <= -0.9
+        xp = x >=thres
+        xn = x <= -thres
+        yn =  y <=thres
+        yp = y>=thres
+        x = xp or xn
+        y = yp or yn
+        if up and not (x or y):
+            sense.show_message("up")
+        elif down and not (x or y):
+            print('down')
+
+        print("x={0}, y={1}, z={2}".format(x, y, z))
