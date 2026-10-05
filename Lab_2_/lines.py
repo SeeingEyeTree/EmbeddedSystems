@@ -53,7 +53,7 @@ if __name__ == "__main__":
         next_pixels = []
         for x, y in pixels:
             for p in get_adjacent_pixels(x, y):
-                if p not in visited:
+                if p not in visited and p not in next_pixels:
                     next_pixels.append(p)
         if any(p == (7, 7) for p in next_pixels):
             # reset the pixels to start over
