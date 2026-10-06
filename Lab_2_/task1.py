@@ -5,7 +5,7 @@ sense = SenseHat()
 
 def display_grid(grid):
 
-    for i row in range(8):
+    for i in range(8):
         for j in range(8):
             sense.set_pixel(i, j, grid[i][j])
 
