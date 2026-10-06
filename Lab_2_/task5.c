@@ -18,7 +18,7 @@ int main(void) {
     struct itimerval timer;
     
     memset(&handler, 0, sizeof(handler)); // c is apprently silly and empty values are not actually empty unless you clear them. set no blocks?
-    .sa_handler = &timer_handler // calls the fuction when the timer trigers
+    handler.sa_handler = &timer_handler // calls the fuction when the timer trigers
     sigaction(SIGALRM, &handler, NULL) // change what the intrupt points to?
     
     timer.it_value.tv_sec = 1; // how long till the first fire of the intrupt, seconds 
