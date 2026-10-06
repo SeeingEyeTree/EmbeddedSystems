@@ -28,6 +28,7 @@ int main(void) {
     setitimer(ITIMER_REAL, &timer, NULL); // we use real time and send it to the kernel
 
     while (count < 5) {
+        printf("Waiting for timer in main loops");
         pause();  // sleep until a signal arrives
     }
 
