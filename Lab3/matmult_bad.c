@@ -18,7 +18,7 @@ for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
             float sum = 0.0f;
             for (int k = 0; k < n; k++) {
-                C[i][j] += A[i][k] * B[k][j];   // B[k][j] jumps a whole row each step
+                C[i][j] += A[i][k] * B[k][j]; // B[k][j] cache misses 
             }
         }
     }
