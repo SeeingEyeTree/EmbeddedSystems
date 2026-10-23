@@ -2,25 +2,25 @@
 #include <unistd.h>
 #include <stdio.h>
 
+#define CHIP_PATH "/dev/gpiochip0"  // check the chip with `gpioinfo`
+#define LINE_NUM  9                 // AON GPIO 9 = onboard ACT LED
+
 int main(void) {
-    struct gpiod_chip *chip = gpiod_chip_open("/dev/gpiochip0");
+    struct gpiod_chip *chip = gpiod_chip_open(CHIP_PATH);
     if (!chip) { perror("chip"); return 1; }
 
-    struct gpiod_line_settings *s = gpiod_line_settings_new();
-    gpiod_line_settings_set_direction(s, GPIOD_LINE_DIRECTION_OUTPUT);
-    struct gpiod_line_config *lc = gpiod_line_config_new();
-    unsigned int off = 9;
-    gpiod_line_config_add_line_settings(lc, &off, 1, s);
-    struct gpiod_request_config *rc = gpiod_request_config_new();
-    gpiod_request_config_set_consumer(rc, "blink");
+    struct gpiod_line *line = gpiod_chip_get_line(chip, LINE_NUM);
+    if (!line) { perror("get_line"); return 1; }
 
-    struct gpiod_line_request *req = gpiod_chip_request_lines(chip, rc, lc);
-    if (!req) { perror("request"); return 1; }
+    if (gpiod_line_request_output(line, "blink", 0) < 0) {
+        perror("request_output");  // "Device busy": set the ACT trigger to none first
+        return 1;
+    }
 
     for (;;) {
-        gpiod_line_request_set_value(req, 9, GPIOD_LINE_VALUE_ACTIVE);
+        gpiod_line_set_value(line, 1);  // On (libgpiod handles active-low)
         usleep(500000);
-        gpiod_line_request_set_value(req, 9, GPIOD_LINE_VALUE_INACTIVE);
+        gpiod_line_set_value(line, 0);  // Off
         usleep(500000);
     }
 }
