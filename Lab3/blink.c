@@ -2,7 +2,7 @@
 #include <unistd.h>
 #include <stdio.h>
 
-#define CHIP_PATH "/dev/gpiochip0"  // check the chip with `gpioinfo`
+#define CHIP_PATH "/dev/gpiochip11" // check the chip with `gpioinfo`
 #define LINE_NUM  9                 // AON GPIO 9 = onboard ACT LED
 
 int main(void) {
