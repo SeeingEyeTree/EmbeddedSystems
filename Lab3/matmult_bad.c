@@ -14,12 +14,11 @@ void multiply_good(int n, float A[n][n], float B[n][n], float C[n][n]) {
 
 
 void multiply_bad(int n, float A[n][n], float B[n][n], float C[n][n]) {
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) 
-        C[i][j] = 0.0;   
-        for (int k = 0; k < n; k++) {
-            for (int j = 0; j < n; j++) {
-                C[i][j] += A[i][k] * B[k][j];
+for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            float sum = 0.0f;
+            for (int k = 0; k < n; k++) {
+                C[i][j] += A[i][k] * B[k][j];   // B[k][j] jumps a whole row each step
             }
         }
     }
