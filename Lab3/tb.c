@@ -2,16 +2,20 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 void multiply_good(int n, float A[n][n], float B[n][n], float C[n][n]);
+void multiply_bad(int n, float A[n][n], float B[n][n], float C[n][n]);
 #define N 1024  
 float A[N][N];
 float B[N][N];
 float C[N][N];
 
 
-int main() {
+int main(int argc, char **argv) {
+    const char *mode = (argc > 1) ? argv[1] : "good";
+
     srand((unsigned)time(NULL));
     for(int i = 0; i < N; i++){
         for( int j = 0; j < N; j++){
@@ -22,8 +26,12 @@ int main() {
     }
 
     clock_t start_time = clock();
-
-    multiply_good(N, A, B,C);
+    if (strcmp(mode, "good") == 0) {
+        multiply_good(N, A, B,C);
+    }
+    else{
+        multiply_bad(N, A, B,C);
+    }
 
     clock_t end_time = clock();
     float elapse = (float)(end_time - start_time) / CLOCKS_PER_SEC;
