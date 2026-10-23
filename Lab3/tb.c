@@ -5,7 +5,7 @@
 #include <time.h>
 
 void multiply_good(int n, float A[n][n], float B[n][n], float C[n][n]);
-#define N 1024;
+#define N 1024  
 float A[N][N];
 float B[N][N];
 float C[N][N];
