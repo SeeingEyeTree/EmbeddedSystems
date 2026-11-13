@@ -1,3 +1,15 @@
+// Blink SOS on the Pi 5 ACT LED (AON GPIO 9) using mmap() on /dev/mem.
+// AON GPIO is a brcmstb GPIO block inside the BCM2712 (not RP1), so
+// /dev/gpiomem0 cannot reach it; we map the physical address directly.
+//
+// Before running, stop the kernel from touching the LED:
+//   echo none | sudo tee /sys/class/leds/ACT/trigger
+// Build: gcc blink.c -o blink     Run: sudo ./blink
+//
+// Addresses come from the BCM2712 device tree (gpio@7d517c00 under the
+// soc at 0x1000000000). Verify on your Pi before trusting them:
+//   xxd -p /proc/device-tree/axi/gpio@7d517c00/reg 2>/dev/null ||
+//   find /proc/device-tree -name 'gpio@7d517c00'
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
@@ -5,70 +17,53 @@
 #include <unistd.h>
 #include <sys/mman.h>
 
-#define PIN 9                  // RP1 GPIO9 = physical header pin 21
+#define AON_GPIO_PHYS  0x107d517c00ULL   // AON GPIO bank 0
+#define PAGE_MASK_4K   (~0xfffULL)
 
-// Offsets inside the /dev/gpiomem0 mapping (RP1 datasheet, Table 2)
-#define MAP_SIZE   0x30000
-#define IO_BANK0   0x00000 // 0x400d0000
-#define SYS_RIO0   0x10000 // 0x400e0000
-#define PADS_BANK0 0x20000 // 0x400f0000
+// brcmstb GPIO bank 0 register offsets
+#define GIO_DATA       0x04   // pin levels / output values
+#define GIO_IODIR      0x08   // 1 = input, 0 = output
 
-#define RIO_OUT    0x0
-#define RIO_OE     0x4
-#define ALIAS_SET  0x2000 // atomic bitmask set on write
-#define ALIAS_CLR  0x3000 // atomic bitmask clear on write
-
-#define FUNCSEL_SYS_RIO 5 // a5 in the GPIO function table
+#define PIN            9      // AON GPIO 9, ACT LED, active-low (0 = on)
 
 #define UNIT       200000
 #define DOT        (UNIT)
 #define DASH       (3 * UNIT)
 #define SYMBOL_GAP (UNIT)
-#define LETTER_GAP (3 * UNIT - SYMBOL_GAP)
+#define LETTER_GAP (3 * UNIT - SYMBOL_GAP)  // blink() already adds one symbol gap
 
-static volatile uint32_t *out_set;
-static volatile uint32_t *out_clr;
+static volatile uint32_t *data;
 
 static void blink(useconds_t on_time) {
-    *out_set = 0 << PIN; // On
+    *data &= ~(1u << PIN);  // On  (active-low)
     usleep(on_time);
-    *out_clr = 0 << PIN; // Off
+    *data |= (1u << PIN);   // Off
     usleep(SYMBOL_GAP);
 }
 
 int main(void) {
-    int fd = open("/dev/gpiomem0", O_RDWR | O_SYNC);
-    if (fd < 0) { 
-        perror("open /dev/gpiomem0"); return 1;
-    }
-    volatile uint32_t *base = mmap(NULL, MAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-    if (base == MAP_FAILED) { 
-        perror("mmap"); return 1; 
-    }
+    int fd = open("/dev/mem", O_RDWR | O_SYNC);
+    if (fd < 0) { perror("open /dev/mem (need sudo)"); return 1; }
 
-    // Register pointers base is uint32_t* divide offsets by 4
-    volatile uint32_t *ctrl = base + (IO_BANK0 + 8 * PIN + 4) / 4; // GPIOn_CTRL
-    volatile uint32_t *pad = base + (PADS_BANK0 + 4 + 4 * PIN) / 4; // pad GPIOn
-    volatile uint32_t *oe_set = base + (SYS_RIO0 + ALIAS_SET + RIO_OE) / 4;
-    out_set = base + (SYS_RIO0 + ALIAS_SET + RIO_OUT) / 4;
-    out_clr = base + (SYS_RIO0 + ALIAS_CLR + RIO_OUT) / 4;
+    uint64_t page = AON_GPIO_PHYS & PAGE_MASK_4K;
+    uint64_t off  = AON_GPIO_PHYS - page;
+    volatile uint8_t *map = mmap(NULL, 0x1000, PROT_READ | PROT_WRITE,
+                                 MAP_SHARED, fd, (off_t)page);
+    if (map == MAP_FAILED) { perror("mmap"); return 1; }
 
-    *ctrl = (*ctrl & ~0x1fu) | FUNCSEL_SYS_RIO; // route the pin to SYS_RIO
-    *pad &= ~(1u << 7); // clear OD (reset value is 1)
-    *oe_set = 1u << PIN; // output enable
+    volatile uint32_t *iodir = (volatile uint32_t *)(map + off + GIO_IODIR);
+    data = (volatile uint32_t *)(map + off + GIO_DATA);
 
-    while(true) {
-        for (int i = 0; i < 3; i++){ // s dot dot dot
-            blink(DOT);
-        }
+    printf("IODIR=%08x DATA=%08x\n", *iodir, *data);  // sanity check
+    *data |= (1u << PIN);     // start with LED off
+    *iodir &= ~(1u << PIN);   // pin 9 -> output
+
+    while (true) {
+        for (int i = 0; i < 3; i++) blink(DOT);   // s
         usleep(LETTER_GAP);
-        for (int i = 0; i < 3; i++){ // o dash dash dash
-            blink(DASH);
-        }
+        for (int i = 0; i < 3; i++) blink(DASH);  // o
         usleep(LETTER_GAP);
-        for (int i = 0; i < 3; i++){
-            blink(DOT);
-        }
-        usleep(4*UNIT);
+        for (int i = 0; i < 3; i++) blink(DOT);   // s
+        usleep(4 * UNIT);
     }
 }
