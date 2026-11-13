@@ -10,6 +10,7 @@
 // soc at 0x1000000000). Verify on your Pi before trusting them:
 //   xxd -p /proc/device-tree/axi/gpio@7d517c00/reg 2>/dev/null ||
 //   find /proc/device-tree -name 'gpio@7d517c00'
+#define _FILE_OFFSET_BITS 64   // physical address is above 4 GB; needs 64-bit off_t
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
