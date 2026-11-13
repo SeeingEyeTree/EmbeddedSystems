@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include <sys/mman.h>
 
-#define PIN        17                 // GPIO17 = physical header pin 11
+#define PIN 9                  // RP1 GPIO9 = physical header pin 21
 
 // Offsets inside the /dev/gpiomem0 mapping (RP1 datasheet, Table 2)
 #define MAP_SIZE   0x30000
@@ -20,7 +20,7 @@
 
 #define FUNCSEL_SYS_RIO 5 // a5 in the GPIO function table
 
-#define UNIT       2000000
+#define UNIT       200000
 #define DOT        (UNIT)
 #define DASH       (3 * UNIT)
 #define SYMBOL_GAP (UNIT)
