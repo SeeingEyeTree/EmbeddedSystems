@@ -20,7 +20,7 @@
 
 #define FUNCSEL_SYS_RIO 5 // a5 in the GPIO function table
 
-#define UNIT       200000
+#define UNIT       2000000
 #define DOT        (UNIT)
 #define DASH       (3 * UNIT)
 #define SYMBOL_GAP (UNIT)
