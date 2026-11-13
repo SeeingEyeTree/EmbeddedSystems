@@ -1,11 +1,13 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 // The code below simulates how RMS algorithm works with processe A and B.
 // Please read it in detail and understand how it works.
 // Add your own code to make it be able to handle preemptive situations.
 // Realize EDF algorithm based on this implementation.
 
-int main() {
+int main(int argc, char *argv[]) {
     int periodA, periodB;           // period (relative deadline) of A and B
     int execTimeA, execTimeB;       // worst-case execution time of A and B
     int absDeadlineA, absDeadlineB; // absolute deadline of A and B
@@ -14,7 +16,19 @@ int main() {
     int doA = 0, doB = 0;           // switches between A and B (e.g. doA == 1 && doB == 0, run A)
     int tA = 0, tB = 0;             // accumulated execution time
     int T;                          // simulated time
-    int EDF = 1;
+    int EDF = 1;                    // 1 = EDF, 0 = RMS; set with "--EDF 0" or "--EDF 1" (default 1)
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "--EDF") == 0 && i + 1 < argc) {
+            EDF = atoi(argv[++i]);
+            if (EDF != 0 && EDF != 1) {
+                printf("--EDF must be 0 (RMS) or 1 (EDF)\n");
+                return 1;
+            }
+        } else {
+            printf("usage: %s [--EDF 0|1]\n", argv[0]);
+            return 1;
+        }
+    }
     // Input handling and reading
     printf("\t\t\t---------------------------------------\n");
     printf("\t\t\tRate Monotonic Schedule (RMS) Algorithm\n");
