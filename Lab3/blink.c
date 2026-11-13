@@ -19,7 +19,6 @@
 #include <sys/mman.h>
 
 #define AON_GPIO_PHYS  0x107d517c00ULL   // AON GPIO bank 0
-#define PAGE_MASK_4K   (~0xfffULL)
 
 // brcmstb GPIO bank 0 register offsets
 #define GIO_DATA       0x04   // pin levels / output values
@@ -46,9 +45,10 @@ int main(void) {
     int fd = open("/dev/mem", O_RDWR | O_SYNC);
     if (fd < 0) { perror("open /dev/mem (need sudo)"); return 1; }
 
-    uint64_t page = AON_GPIO_PHYS & PAGE_MASK_4K;
+    uint64_t psz  = (uint64_t)sysconf(_SC_PAGESIZE);  // 16 KB on Pi 5
+    uint64_t page = AON_GPIO_PHYS & ~(psz - 1);
     uint64_t off  = AON_GPIO_PHYS - page;
-    volatile uint8_t *map = mmap(NULL, 0x1000, PROT_READ | PROT_WRITE,
+    volatile uint8_t *map = mmap(NULL, psz, PROT_READ | PROT_WRITE,
                                  MAP_SHARED, fd, (off_t)page);
     if (map == MAP_FAILED) { perror("mmap"); return 1; }
 
