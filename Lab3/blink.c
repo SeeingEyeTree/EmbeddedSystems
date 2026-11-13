@@ -30,9 +30,9 @@ static volatile uint32_t *out_set;
 static volatile uint32_t *out_clr;
 
 static void blink(useconds_t on_time) {
-    *out_set = 1 << PIN; // On
+    *out_set = 0 << PIN; // On
     usleep(on_time);
-    *out_clr = 1 << PIN; // Off
+    *out_clr = 0 << PIN; // Off
     usleep(SYMBOL_GAP);
 }
 
